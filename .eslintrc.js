@@ -1,0 +1,96 @@
+module.exports = {
+  extends: [
+    "airbnb",
+    "airbnb-typescript",
+    "prettier",
+    "prettier/react",
+    "prettier/@typescript-eslint",
+  ],
+  plugins: [
+    "eslint-comments",
+    "jest",
+    "unicorn",
+    "react-hooks",
+    "@typescript-eslint",
+  ],
+  parser: "@typescript-eslint/parser",
+  env: {
+    browser: true,
+    node: true,
+    es6: true,
+    mocha: true,
+    jest: true,
+    jasmine: true,
+  },
+  rules: {
+    "@typescript-eslint/explicit-function-return-type": ["off", {
+      allowTypedFunctionExpressions: true
+    }],
+    "@typescript-eslint/explicit-member-accessibility": 0,
+    "@typescript-eslint/interface-name-prefix": 0,
+    "@typescript-eslint/no-non-null-assertion": 0,
+    "@typescript-eslint/no-use-before-define": ["error", {
+      classes: true,
+      functions: false,
+      typedefs: true
+    }],
+    "arrow-body-style": 0,
+    "arrow-parens": 0,
+    "consistent-return": 0,
+    "eslint-comments/no-unlimited-disable": 0,
+    "function-paren-newline": 0,
+    "generator-star-spacing": 0,
+    "implicit-arrow-linebreak": 0,
+    "import/extensions": 0,
+    "import/no-cycle": 0,
+    "import/no-default-export": [0, "camel-case"],
+    "import/no-extraneous-dependencies": [2, {
+      devDependencies: ["**/tests/**.{ts,js,jsx,tsx}", "**/_test_/**.{ts,js,jsx,tsx}", "/mock/**/**.{ts,js,jsx,tsx}", "**/**.test.{ts,js,jsx,tsx}", "**/_mock.{ts,js,jsx,tsx}", "**/example/**.{ts,js,jsx,tsx}", "**/examples/**.{ts,js,jsx,tsx}"],
+      optionalDependencies: true
+    }],
+    "import/no-unresolved": [2, {
+      caseSensitive: true,
+      commonjs: true,
+      ignore: ["^@/", "^@@/"]
+    }],
+    "import/order": "warn",
+    "import/prefer-default-export": "off",
+    "jsx-a11y/anchor-is-valid": 0,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "jsx-a11y/no-noninteractive-element-interactions": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "linebreak-style": 0,
+    "no-param-reassign": 2,
+    "no-prototype-builtins": "off",
+    "no-use-before-define": 0,
+    "object-curly-newline": 0,
+    "operator-linebreak": 0,
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/rules-of-hooks": "error",
+    "react/destructuring-assignment": "off",
+    "react/forbid-prop-types": 0,
+    "react/jsx-filename-extension": "off",
+    "react/jsx-fragments": 0,
+    "react/jsx-one-expression-per-line": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/jsx-wrap-multilines": 0,
+    "react/no-array-index-key": "warn",
+    "react/prop-types": 0,
+    "react/require-default-props": 0,
+    "react/sort-comp": 1,
+    "react/state-in-constructor": 0,
+    "react/static-property-placement": 0,
+    "sort-imports": 0,
+    "space-before-function-paren": 0,
+    "unicorn/prevent-abbreviations": "off"
+  },
+  settings: {
+    "import/resolver": {
+      node: { extensions: [".js", ".jsx", ".ts", ".tsx", ".d.ts"] },
+    },
+    polyfills: ["fetch", "Promise", "URL", "object-assign"],
+  },
+  parserOptions: {
+    project: "./tsconfig.json",
+  },
+}

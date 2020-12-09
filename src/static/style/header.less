@@ -1,0 +1,38 @@
+#header {
+  position: relative;
+  z-index: 10;
+  height: @header-height;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(240, 241, 242, 65);
+
+  &-menu {
+    float: left;
+  }
+
+  &-right {
+    float: right;
+    overflow: hidden;
+  }
+
+  #logo {
+    float: left;
+    height: 64px;
+    padding-left: 40px;
+    overflow: hidden;
+    line-height: 64px;
+    text-decoration: none;
+    img {
+      position: relative;
+      top: -2px;
+      height: 32px;
+      margin-right: 16px;
+      vertical-align: middle;
+    }
+
+    > span {
+      color: @header-color;
+      font-weight: 500;
+      font-size: 18px;
+    }
+  }
+}
