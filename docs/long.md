@@ -1,8 +1,9 @@
 ---
-order: 2
 title: long
-type: 构建和部署
-time: 2020-12-07
+datetime: 2020-12-07 12:00:00
+tags: 
+  - typescript
+  - test
 ---
 
 ## 构建

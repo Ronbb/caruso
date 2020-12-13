@@ -2,10 +2,7 @@ const { resolve } = require("path")
 
 module.exports = async ({ graphql, actions }) => {
   const { createPage, createRedirect } = actions
-  // Used to detect and prevent duplicate redirects
-
   const docsTemplate = resolve(__dirname, "../src/templates/docs.tsx")
-  // Redirect /index.html to root.
   createRedirect({
     fromPath: "/index.html",
     redirectInBrowser: true,
@@ -15,13 +12,42 @@ module.exports = async ({ graphql, actions }) => {
   const allMarkdown = await graphql(
     `
       {
-        allMarkdownRemark(limit: 1000) {
+        allMarkdownRemark(sort: { fields: [frontmatter___datetime], order: DESC }) {
           edges {
             node {
+              frontmatter {
+                title
+                tags
+                datetime
+              }
               fields {
                 slug
-                underScoreCasePath
                 path
+                modifiedTime
+                type
+              }
+            }
+            next {
+              fields {
+                path
+                slug
+              }
+              frontmatter {
+                tags
+                datetime
+                title
+              }
+            }
+            previous {
+              fields {
+                slug
+                path
+                modifiedTime
+              }
+              frontmatter {
+                tags
+                datetime
+                title
               }
             }
           }
@@ -33,27 +59,23 @@ module.exports = async ({ graphql, actions }) => {
   if (allMarkdown.errors) {
     // eslint-disable-next-line no-console
     console.error(allMarkdown.errors)
-
     throw Error(allMarkdown.errors)
   }
+
   const redirects = {}
 
   const { edges } = allMarkdown.data.allMarkdownRemark
-  edges.forEach(edge => {
-    const { slug, underScoreCasePath } = edge.node.fields
-    if (slug.startsWith("docs-")) {
-      const template = docsTemplate
+  edges.forEach(({ node, previous, next }) => {
+    const { slug, type } = node.fields
+    if (type === "/docs") {
       const createArticlePage = path => {
-        if (underScoreCasePath !== path) {
-          redirects[underScoreCasePath] = path
-        }
-
         return createPage({
           path,
-          component: template,
+          component: docsTemplate,
           context: {
             slug,
-            type: "/docs/",
+            type,
+            navigation: { previous, next },
           },
         })
       }
@@ -72,7 +94,7 @@ module.exports = async ({ graphql, actions }) => {
   createRedirect({
     fromPath: "/docs/",
     redirectInBrowser: true,
-    toPath: "/docs/getting-started",
+    toPath: "/",
   })
 
   Object.keys(redirects).map(path =>

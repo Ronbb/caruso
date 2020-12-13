@@ -4,11 +4,11 @@ import { Helmet } from "react-helmet"
 import { Affix, Button, Tooltip } from "antd"
 import dayjs from "dayjs"
 import { EditOutlined } from "@ant-design/icons"
-import { FrontmatterData } from "../../templates/docs"
+import { Frontmatter, MarkDownFields } from "../../templates/docs"
 
 interface ArticleProps {
   content: {
-    meta: FrontmatterData
+    meta: Frontmatter & MarkDownFields
     toc: string | false
     content: string
   }

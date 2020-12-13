@@ -2,11 +2,12 @@ import React, { FC } from "react"
 import { Row, Col, Menu, Layout } from "antd"
 import { useMediaQuery } from "react-responsive"
 import Article from "./article"
-import { FrontmatterData } from "../../templates/docs"
+import { Frontmatter, MarkDownFields, PageNavigation } from "../../templates/docs"
 
 export interface MainContentProps {
   data: {
-    meta: FrontmatterData
+    meta: Frontmatter & MarkDownFields
+    navigation: PageNavigation
     toc: string | false
     content: string
   }

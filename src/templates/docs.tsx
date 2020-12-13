@@ -3,51 +3,43 @@ import { graphql } from "gatsby"
 import Layout from "../components/layout"
 import Content from "../components/content"
 
-interface MarkDownFields {
+export interface MarkDownFields {
   path: string
   slug: string
   modifiedTime: number
 }
 
-export interface FrontmatterData extends MarkDownFields {
+export interface Frontmatter {
   title: string
-  time: string
-  toc: string
-  order: number
-  type: string
-  filename: string
   subtitle: string
-  path: string
-  disabled: boolean
-  important: boolean
-  next: {
-    frontmatter: GraphqlFrontmatterData
-    fields: MarkDownFields
-  }
-  previous: { frontmatter: GraphqlFrontmatterData; fields: MarkDownFields }
+  datetime: string
+  tags: string[]
 }
 
-export interface GraphqlFrontmatterData extends FrontmatterData {}
+interface WordCount {
+  words: number
+}
 
 export interface MarkdownRemarkData {
   html: string
   tableOfContents: string
-  frontmatter: GraphqlFrontmatterData
+  frontmatter: Frontmatter
   fields: MarkDownFields
+  wordCount: WordCount
 }
 
 export interface AllMarkdownRemarkData {
   edges: {
     node: {
-      frontmatter: GraphqlFrontmatterData
+      frontmatter: Frontmatter
       fields: MarkDownFields
     }
-    next: {
-      frontmatter: GraphqlFrontmatterData
-      fields: MarkDownFields
-    }
-    previous: { frontmatter: GraphqlFrontmatterData; fields: MarkDownFields }
   }[]
+}
+
+export interface PageNavigation {
+  previous: MarkDownFields | null
+  next: MarkDownFields | null
 }
 
 interface TemplateProps {
@@ -55,9 +47,20 @@ interface TemplateProps {
     markdownRemark: MarkdownRemarkData
     allMarkdownRemark: AllMarkdownRemarkData
   }
+  pageContext: {
+    slug: string
+    type: string
+    navigation: PageNavigation
+  }
 }
 
-const Template: FC<TemplateProps> = ({ data: { markdownRemark } }) => {
+const Template: FC<TemplateProps> = props => {
+  const {
+    data: { markdownRemark, allMarkdownRemark },
+    pageContext: { navigation }
+  } = props
+console.log(props, allMarkdownRemark)
+
   const { frontmatter, fields, html, tableOfContents } = markdownRemark
 
   return (
@@ -67,9 +70,8 @@ const Template: FC<TemplateProps> = ({ data: { markdownRemark } }) => {
           meta: {
             ...frontmatter,
             ...fields,
-            filename: fields.slug,
-            path: fields.path,
           },
+          navigation,
           toc: tableOfContents,
           content: html,
         }}
@@ -87,33 +89,35 @@ export const pageQuery = graphql`
       tableOfContents
       frontmatter {
         title
-        order
-        type
+        datetime
+        subtitle
+        tags
       }
       fields {
         path
         slug
         modifiedTime
       }
+      wordCount {
+        words
+      }
     }
     allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: $type } }
-      sort: {
-        fields: [frontmatter___order, frontmatter___type, frontmatter___time]
-        order: DESC
-      }
+      filter: { fields: { type: { eq: $type } } }
+      sort: { fields: [frontmatter___datetime], order: DESC }
     ) {
       edges {
         node {
           frontmatter {
             title
-            order
-            type
-            time
+            datetime
+            subtitle
+            tags
           }
           fields {
-            slug
             path
+            slug
+            modifiedTime
           }
         }
       }
