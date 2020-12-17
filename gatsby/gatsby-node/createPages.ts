@@ -1,18 +1,22 @@
-const { resolve } = require("path")
+import { GatsbyNode } from "gatsby"
+import { resolveRoot } from "../utils"
 
-module.exports = async ({ graphql, actions }) => {
+const createPages: GatsbyNode["createPages"] = async ({ graphql, actions }) => {
   const { createPage, createRedirect } = actions
-  const docsTemplate = resolve(__dirname, "../src/templates/docs.tsx")
+  const docsTemplate = resolveRoot("src/templates/docs.tsx")
+  
   createRedirect({
     fromPath: "/index.html",
     redirectInBrowser: true,
     toPath: "/",
   })
 
-  const allMarkdown = await graphql(
+  const allMarkdown: any = await graphql(
     `
       {
-        allMarkdownRemark(sort: { fields: [frontmatter___datetime], order: DESC }) {
+        allMarkdownRemark(
+          sort: { fields: [frontmatter___datetime], order: DESC }
+        ) {
           edges {
             node {
               frontmatter {
@@ -79,16 +83,16 @@ module.exports = async ({ graphql, actions }) => {
           },
         })
       }
-
-      createArticlePage(slug.replace("/index", ""))
+      createArticlePage(slug)
     }
   })
 
-  const indexTemplate = resolve(__dirname, "../src/pages/index.tsx")
+  const indexTemplate = resolveRoot("src/pages/index.tsx")
 
   createPage({
     path: "/",
     component: indexTemplate,
+    context: {}
   })
 
   createRedirect({
@@ -105,3 +109,5 @@ module.exports = async ({ graphql, actions }) => {
     })
   )
 }
+
+export default createPages

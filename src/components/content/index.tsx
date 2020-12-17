@@ -1,30 +1,94 @@
 import React, { FC } from "react"
 import { Row, Col, Menu, Layout } from "antd"
 import { useMediaQuery } from "react-responsive"
+import { FileTextOutlined } from "@ant-design/icons"
+import { keys } from "lodash"
 import Article from "./article"
-import { Frontmatter, MarkDownFields, PageNavigation } from "../../templates/docs"
+import {
+  Frontmatter,
+  MarkDownFields,
+  MarkdownPath,
+  PageNavigation,
+} from "../../templates/docs"
 
-export interface MainContentProps {
+export type DocumentMenu = MarkdownPath
+
+export type DocumentMeta = Frontmatter & MarkDownFields
+
+export interface DocumentMenuProps {
+  title?: React.ReactText
+  menu: DocumentMenu
+}
+
+export interface DocumentContentProps {
+  menu: DocumentMenu
   data: {
-    meta: Frontmatter & MarkDownFields
+    meta: DocumentMeta
     navigation: PageNavigation
-    toc: string | false
+    toc: string
     content: string
   }
 }
 
-const Content: FC<MainContentProps> = props => {
-  const { data } = props
+interface InsideCreatorOptions {
+  path: string
+  title?: string
+  further: MarkdownPath
+}
+
+const DesktopMenu: FC<DocumentMenuProps> = ({ menu }) => {
+  const openKeys: string[] = []
+  const insideCreator = ({ path, title, further }: InsideCreatorOptions) => {
+    const furtherPath = `${path}/${title}`
+    const inside = [
+      further.slug && (
+        <Menu.Item key={further.slug} icon={<FileTextOutlined />}>
+          {title}
+        </Menu.Item>
+      ),
+      keys(further.further).map(furtherKey =>
+        insideCreator({
+          path: furtherPath,
+          title: furtherKey,
+          further: further.further[furtherKey],
+        })
+      ),
+    ]
+
+    openKeys.push(furtherPath)
+    return title ? (
+      <Menu.SubMenu key={furtherPath} title={title} disabled>
+        {inside}
+      </Menu.SubMenu>
+    ) : (
+      inside
+    )
+  }
+
+  return (
+    <Menu
+      mode="inline"
+      defaultOpenKeys={openKeys}
+      inlineIndent={12}
+      expandIcon={<div />}
+    >
+      {insideCreator({ further: menu, path: "/" })}
+    </Menu>
+  )
+}
+
+const DocumentContent: FC<DocumentContentProps> = props => {
+  const { data, menu } = props
   const isMobile = useMediaQuery({ query: "(max-width: 996px)" }) && window
-  
+
   return (
     <Layout.Content id="content">
-      <Row>
+      <Row gutter={64}>
         {isMobile ? (
           <div />
         ) : (
           <Col xxl={4} xl={5} lg={6} md={24} sm={24} xs={24}>
-            <Menu />
+            <DesktopMenu menu={menu} />
           </Col>
         )}
         <Col xxl={20} xl={19} lg={18} md={24} sm={24} xs={24}>
@@ -37,4 +101,4 @@ const Content: FC<MainContentProps> = props => {
   )
 }
 
-export default Content
+export default DocumentContent

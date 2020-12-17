@@ -4,16 +4,19 @@ import { ConfigProvider, Layout } from "antd"
 import zhCN from "antd/lib/locale-provider/zh_CN"
 import cnLocale from "../../static/locale/zh-CN"
 import "../../static/style/index.less"
-import Header from "./header"
+import Header, { HeaderProps } from "./header"
 import Footer from "./footer"
 
-const CustomLayout: FC = (props) => {
-    const { children } = props
+interface CustomLayoutProps extends HeaderProps {
+}
+
+const CustomLayout: FC<CustomLayoutProps> = (props) => {
+    const { children, localSearch } = props
     return (
       <IntlProvider locale={cnLocale.locale} messages={cnLocale.messages}>
         <ConfigProvider locale={zhCN}>
           <Layout>
-            <Header />
+            <Header localSearch={localSearch} />
             {children}
             <Footer />
           </Layout>

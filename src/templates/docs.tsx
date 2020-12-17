@@ -1,7 +1,7 @@
 import React, { FC } from "react"
-import { graphql } from "gatsby"
+import { graphql, PageProps } from "gatsby"
 import Layout from "../components/layout"
-import Content from "../components/content"
+import DocumentContent from "../components/content"
 
 export interface MarkDownFields {
   path: string
@@ -42,30 +42,62 @@ export interface PageNavigation {
   next: MarkDownFields | null
 }
 
-interface TemplateProps {
-  data: {
-    markdownRemark: MarkdownRemarkData
-    allMarkdownRemark: AllMarkdownRemarkData
-  }
-  pageContext: {
-    slug: string
-    type: string
-    navigation: PageNavigation
-  }
+export interface LocalSearchMarkdowns {
+  index: any
+  store: any
 }
 
-const Template: FC<TemplateProps> = props => {
+interface TemplateData {
+  markdownRemark: MarkdownRemarkData
+  allMarkdownRemark: AllMarkdownRemarkData
+  localSearchMarkdowns: LocalSearchMarkdowns
+}
+
+interface TemplateContext {
+  slug: string
+  type: string
+  navigation: PageNavigation
+}
+
+export interface MarkdownPath {
+  further: Record<string, MarkdownPath>
+  slug?: string
+}
+
+const Template: FC<PageProps<TemplateData, TemplateContext>> = props => {
   const {
-    data: { markdownRemark, allMarkdownRemark },
-    pageContext: { navigation }
+    data: { markdownRemark, allMarkdownRemark, localSearchMarkdowns },
+    pageContext: { navigation },
   } = props
-console.log(props, allMarkdownRemark)
 
   const { frontmatter, fields, html, tableOfContents } = markdownRemark
 
+  const menu = allMarkdownRemark.edges.reduce<MarkdownPath>(
+    (result, edge) => {
+      const { path: rawPath, slug } = edge.node.fields
+      const rawPathArray = rawPath.split("/")
+      if (rawPathArray.length === 0) {
+        return result
+      }
+      const lastCursor = rawPathArray.reduce((previous, item) => {
+        let current = previous.further[item]
+        if (!current) {
+          current = { further: {} }
+          // eslint-disable-next-line no-param-reassign
+          previous.further[item] = current
+        }
+        return current
+      }, result)
+
+      lastCursor.slug = slug
+      return result
+    },
+    { further: {} }
+  )
+
   return (
-    <Layout>
-      <Content
+    <Layout localSearch={localSearchMarkdowns} >
+      <DocumentContent
         data={{
           meta: {
             ...frontmatter,
@@ -75,6 +107,7 @@ console.log(props, allMarkdownRemark)
           toc: tableOfContents,
           content: html,
         }}
+        menu={menu}
       />
     </Layout>
   )
@@ -121,6 +154,10 @@ export const pageQuery = graphql`
           }
         }
       }
+    }
+    localSearchMarkdowns {
+      index
+      store
     }
   }
 `

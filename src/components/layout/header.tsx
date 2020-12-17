@@ -1,10 +1,42 @@
-import React, { FC } from "react"
+import React, { FC, useEffect, useState } from "react"
 import { FormattedMessage } from "react-intl"
 import { Link } from "gatsby"
 import { EyeOutlined } from "@ant-design/icons"
 import { Row, Col, Select, Button, Layout, Space, Menu } from "antd"
+import { useFlexSearch } from "react-use-flexsearch"
+import FlexSearch from "flexsearch"
+import { lowerCase, words } from "lodash"
 
-const Header: FC = () => {
+export interface HeaderProps {
+  localSearch: {
+    index: string
+    store: any
+  }
+}
+
+const createIndex = exported => {
+  const index = FlexSearch.create({
+    encode: false,
+    tokenize: (item: string) => words(item).map(lowerCase),
+  })
+  index.import(exported)
+  return index
+}
+
+const Header: FC<HeaderProps> = ({ localSearch }) => {
+  const [index, setIndex] = useState<FlexSearch>(createIndex(localSearch.index))
+
+  useEffect(() => {
+    setIndex(createIndex(localSearch.index))
+  }, [localSearch.index])
+
+  const results = useFlexSearch(
+    { query: "ant 构建", suggest: true },
+    index,
+    localSearch.store
+  )
+  console.log(results)
+
   return (
     <div>
       <Layout.Header id="header">

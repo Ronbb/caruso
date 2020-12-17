@@ -17,6 +17,7 @@
     "@ant-design/icons": "^4.3.0",
     "antd": "^4.9.1",
     "dayjs": "^1.9.6",
+    "flexsearch": "^0.6.32",
     "gatsby": "^2.27.5",
     "gatsby-plugin-antd": "^2.2.0",
     "gatsby-plugin-less": "^4.2.0",
@@ -27,6 +28,7 @@
     "react-helmet": "^6.1.0",
     "react-intl": "^5.10.6",
     "react-responsive": "^8.2.0",
+    "react-use-flexsearch": "^0.1.1",
     "slash2": "^2.0.0"
   },
   "devDependencies": {
@@ -55,8 +57,10 @@
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-unicorn": "^23.0.0",
+    "gatsby-plugin-local-search": "^2.0.0",
     "gatsby-plugin-sharp": "^2.10.1",
     "gatsby-plugin-sitemap": "^2.7.0",
+    "gatsby-plugin-ts-config": "^1.1.5",
     "gatsby-plugin-typescript": "^2.7.0",
     "gatsby-remark-autolink-headers": "^2.6.0",
     "gatsby-remark-copy-linked-files": "^2.6.0",
