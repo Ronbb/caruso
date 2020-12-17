@@ -31,15 +31,17 @@ const Article: FC<ArticleProps> = props => {
       <article className="markdown" id="article" ref={node}>
         <h1>
           {title}
-          <span className="subtitle">{subtitle}</span>
           <Tooltip title={<FormattedMessage id="app.content.edit-page" />}>
             <Button type="text" shape="circle" icon={<EditOutlined />} />
           </Tooltip>
         </h1>
-        <div id="modified-time">
-          <FormattedMessage id="app.content.modifiedTime" />
-          {"  "}
-          {dayjs(modifiedTime).format("YYYY-MM-DD HH:mm:ss")}
+        <div id="subtitle">
+          {subtitle}
+          <span id="modified-time">
+            <FormattedMessage id="app.content.modifiedTime" />
+            {"  "}
+            {dayjs(modifiedTime).format("YYYY-MM-DD HH:mm:ss")}
+          </span>
         </div>
         {hideToc ? null : (
           <Affix className="toc-affix" offsetTop={16}>

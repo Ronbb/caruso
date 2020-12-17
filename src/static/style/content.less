@@ -6,12 +6,20 @@
   #article {
     padding-right: 256px;
 
-    #modified-time {
-      margin: 12px 0;
-      color: @text-color-secondary;
-      font-size: 13px;
+    #subtitle {
+      color: @markdown-heading-color-secondary;
+      font-size: 16px;
+      font-weight: normal;
+      line-height: normal;
       font-style: italic;
-      text-align: right;
+    }
+
+    #modified-time {
+      float: right;
+      color: @text-color-secondary;
+      font-size: 12px;
+      line-height: 2;
+      font-style: italic;
     }
   }
 }
