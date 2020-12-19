@@ -49,7 +49,6 @@ const Header: FC<HeaderProps> = ({ localSearch }) => {
           <Col xxl={20} xl={19} lg={16} md={16} sm={0} xs={0}>
             <Menu
               id="header-menu"
-              theme="light"
               mode="horizontal"
             >
               <Menu.Item key="1">nav 1</Menu.Item>
