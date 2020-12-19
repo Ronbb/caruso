@@ -79,6 +79,7 @@ const Template: FC<PageProps<TemplateData, TemplateContext>> = props => {
       if (rawPathArray.length === 0) {
         return result
       }
+      
       const lastCursor = rawPathArray.reduce((previous, item) => {
         let current = previous.further[item]
         if (!current) {

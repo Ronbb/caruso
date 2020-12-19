@@ -1,8 +1,9 @@
 import React, { FC } from "react"
 import { Row, Col, Menu, Layout } from "antd"
 import { useMediaQuery } from "react-responsive"
-import { FileTextOutlined } from "@ant-design/icons"
-import { keys } from "lodash"
+import { FileTextOutlined, FolderOutlined } from "@ant-design/icons"
+import { isEqual, keys } from "lodash"
+import { Link } from "gatsby"
 import Article from "./article"
 import {
   Frontmatter,
@@ -40,24 +41,28 @@ const DesktopMenu: FC<DocumentMenuProps> = ({ menu }) => {
   const openKeys: string[] = []
   const insideCreator = ({ path, title, further }: InsideCreatorOptions) => {
     const furtherPath = `${path}/${title}`
-    const inside = [
-      further.slug && (
-        <Menu.Item key={further.slug} icon={<FileTextOutlined />}>
-          {title}
-        </Menu.Item>
-      ),
-      keys(further.further).map(furtherKey =>
-        insideCreator({
-          path: furtherPath,
-          title: furtherKey,
-          further: further.further[furtherKey],
-        })
-      ),
-    ]
+    const inside = keys(further.further)
+      .map(moreFurtherKey => {
+        const moreFurther = further.further[moreFurtherKey]
+        return [
+          moreFurther.slug && (
+            <Menu.Item key={moreFurther.slug} icon={<FileTextOutlined />}>
+              <Link to={moreFurther.slug}>{moreFurtherKey}</Link>
+            </Menu.Item>
+          ),
+          isEqual(moreFurther.further, {}) ||
+            insideCreator({
+              path: furtherPath,
+              title: moreFurtherKey,
+              further: moreFurther,
+            }),
+        ]
+      })
+      .flat()
 
     openKeys.push(furtherPath)
     return title ? (
-      <Menu.SubMenu key={furtherPath} title={title} disabled>
+      <Menu.SubMenu key={furtherPath} title={title} icon={<FolderOutlined />}>
         {inside}
       </Menu.SubMenu>
     ) : (
